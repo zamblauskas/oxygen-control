@@ -20,8 +20,13 @@ type Schedule struct {
 func LoadConfig(filename string) (*Config, error) {
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return nil, err
+		exampleData, exampleErr := ioutil.ReadFile(filename + ".example")
+		if exampleErr != nil {
+			return nil, err
+		}
+		data = exampleData
 	}
+
 	var conf Config
 	err = yaml.Unmarshal(data, &conf)
 	if err != nil {

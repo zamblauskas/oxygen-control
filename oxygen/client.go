@@ -23,10 +23,10 @@ func NewClient(baseURL string) *Client {
 	}
 }
 
-func (c *Client) Boost() error {
+func (c *Client) sendCommand(command string, name string) error {
 	return c.withRetry(func() error {
-		log.Info().Msg("triggering oxygen boost")
-		url := c.baseURL + "/cmd?sc73=1"
+		log.Info().Msg("triggering " + name)
+		url := c.baseURL + "/cmd?" + command
 		resp, err := c.client.Get(url)
 		if err != nil {
 			return &retryableError{
@@ -52,9 +52,17 @@ func (c *Client) Boost() error {
 			return fmt.Errorf("unexpected status: %s", resp.Status)
 		}
 
-		log.Info().Msg("Oxygen boost triggered successfully")
+		log.Info().Msg(name + " successfully triggered")
 		return nil
 	})
+}
+
+func (c *Client) Boost() error {
+	return c.sendCommand("sc73=1", "oxygen boost")
+}
+
+func (c *Client) StopBoost() error {
+	return c.sendCommand("sc74=1", "oxygen boost stop")
 }
 
 type retryableError struct {

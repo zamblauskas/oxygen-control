@@ -1,15 +1,16 @@
 package config
 
 import (
-	"io/ioutil"
+	"os"
 
 	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
-	OxygenURL string     `yaml:"oxygen_url"`
-	LogFile   string     `yaml:"log_file"`
-	Schedules []Schedule `yaml:"schedules"`
+	OxygenURL string      `yaml:"oxygen_url"`
+	LogFile   string      `yaml:"log_file"`
+	Schedules []Schedule  `yaml:"schedules"`
+	Flic      *FlicConfig `yaml:"flic,omitempty"`
 }
 
 type Schedule struct {
@@ -17,10 +18,16 @@ type Schedule struct {
 	Minute int `yaml:"minute"`
 }
 
+type FlicConfig struct {
+	Enabled             bool   `yaml:"enabled"`
+	ServerURL           string `yaml:"server_url"`
+	ButtonBluetoothAddr string `yaml:"button_bluetooth_address"`
+}
+
 func LoadConfig(filename string) (*Config, error) {
-	data, err := ioutil.ReadFile(filename)
+	data, err := os.ReadFile(filename)
 	if err != nil {
-		exampleData, exampleErr := ioutil.ReadFile(filename + ".example")
+		exampleData, exampleErr := os.ReadFile(filename + ".example")
 		if exampleErr != nil {
 			return nil, err
 		}

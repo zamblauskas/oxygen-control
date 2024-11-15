@@ -7,3 +7,6 @@ This is an independent, personal project and is not affiliated with, endorsed by
 
 ## Supported Features
 - Trigger boost mode by schedule (e.g., at 09:00 and 23:30)
+- Control boost mode using Flic button:
+  - Single click: Start boost mode
+  - Double click: Stop boost mode

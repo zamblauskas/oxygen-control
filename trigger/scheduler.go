@@ -6,38 +6,24 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type Scheduler struct {
-	trigger func() error
-	hour    int
-	minute  int
-}
-
-func NewScheduler(trigger func() error, hour, minute int) *Scheduler {
-	return &Scheduler{
-		trigger: trigger,
-		hour:    hour,
-		minute:  minute,
-	}
-}
-
-func (s *Scheduler) Start() {
+func ScheduleStart(hour, minute int, callback func() error) {
 	go func() {
 		for {
 			now := time.Now()
-			next := time.Date(now.Year(), now.Month(), now.Day(), s.hour, s.minute, 0, 0, now.Location())
+			next := time.Date(now.Year(), now.Month(), now.Day(), hour, minute, 0, 0, now.Location())
 			if now.After(next) {
 				next = next.Add(24 * time.Hour)
 			}
 
 			wait := next.Sub(now)
 			log.Info().
-				Int("hour", s.hour).
-				Int("minute", s.minute).
+				Int("hour", hour).
+				Int("minute", minute).
 				Msg("scheduled next trigger")
 
 			time.Sleep(wait)
 
-			if err := s.trigger(); err != nil {
+			if err := callback(); err != nil {
 				log.Error().Err(err).Msg("failed to execute scheduled trigger")
 			}
 		}

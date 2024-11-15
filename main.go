@@ -19,13 +19,16 @@ func main() {
 	client := oxygen.NewClient(conf.OxygenURL)
 
 	for _, schedule := range conf.Schedules {
-		scheduler := trigger.NewScheduler(client.Boost, schedule.Hour, schedule.Minute)
-		scheduler.Start()
+		trigger.ScheduleStart(schedule.Hour, schedule.Minute, client.Boost)
 	}
 
-	err = client.Boost()
-	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to trigger oxygen boost")
+	if conf.Flic != nil && conf.Flic.Enabled {
+		callbacks := trigger.FlicCallbacks{
+			OnButtonSingleClick: client.Boost,
+			OnButtonDoubleClick: client.StopBoost,
+		}
+
+		trigger.FlicListen(conf.Flic.ServerURL, conf.Flic.ButtonBluetoothAddr, callbacks)
 	}
 
 	log.Info().Msg("Oxygen control started")

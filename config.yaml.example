@@ -1,5 +1,6 @@
 oxygen_url: "http://localhost:3001"
 log_file: "oxygen-control.log"
+db_path: "oxygen-control.db"
 schedules:
   - hour: 9
     minute: 0

@@ -9,6 +9,7 @@ import (
 type Config struct {
 	OxygenURL string      `yaml:"oxygen_url"`
 	LogFile   string      `yaml:"log_file"`
+	DBPath    string      `yaml:"db_path"`
 	Schedules []Schedule  `yaml:"schedules"`
 	Flic      *FlicConfig `yaml:"flic,omitempty"`
 }

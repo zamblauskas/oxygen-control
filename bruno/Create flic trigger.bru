@@ -1,0 +1,20 @@
+meta {
+  name: Create flic trigger
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8512/triggers
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "type": "flic",
+    "mac": "00:00:00:00:00:00",
+    "on_single_click": "start_boost",
+    "on_double_click": "stop_boost"
+  }
+}

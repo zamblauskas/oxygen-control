@@ -1,0 +1,20 @@
+meta {
+  name: Create schedule trigger
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8512/triggers
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "type": "schedule",
+    "hour": 9,
+    "minute": 30,
+    "action": "start_boost"
+  }
+}

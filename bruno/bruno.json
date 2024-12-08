@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Oxygen-Control",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

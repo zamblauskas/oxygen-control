@@ -32,3 +32,13 @@ func (h *TriggerHandler) AddTrigger(c *gin.Context) {
 
 	h.triggerService.AddTrigger(trigger)
 }
+
+func (h *TriggerHandler) GetTriggers(c *gin.Context) {
+	triggers, err := h.triggerService.GetTriggers()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, triggers)
+}

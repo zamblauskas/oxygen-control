@@ -24,6 +24,8 @@ type Trigger interface {
 }
 
 type FlicTrigger struct {
+	ID            string         `json:"id"`
+	Type          TriggerType    `json:"type"`
 	Mac           string         `json:"mac" binding:"required"`
 	OnSingleClick *TriggerAction `json:"on_single_click"`
 	OnDoubleClick *TriggerAction `json:"on_double_click"`
@@ -35,6 +37,8 @@ func (t *FlicTrigger) GetType() TriggerType {
 }
 
 type ScheduleTrigger struct {
+	ID     string        `json:"id"`
+	Type   TriggerType   `json:"type"`
 	Hour   int           `json:"hour" binding:"required"`
 	Minute int           `json:"minute" binding:"required"`
 	Action TriggerAction `json:"action" binding:"required"`

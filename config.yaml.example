@@ -1,12 +1,8 @@
 oxygen_url: "http://localhost:3001"
 log_file: "oxygen-control.log"
 db_path: "oxygen-control.db"
-schedules:
-  - hour: 9
-    minute: 0
-  - hour: 23
-    minute: 30
+schedule:
+  enabled: false
 flic:
   enabled: false
   server_url: "ws://localhost:5551"
-  button_bluetooth_address: "00:00:00:00:00:00"

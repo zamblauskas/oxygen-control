@@ -10,19 +10,17 @@ type Config struct {
 	OxygenURL string      `yaml:"oxygen_url"`
 	LogFile   string      `yaml:"log_file"`
 	DBPath    string      `yaml:"db_path"`
-	Schedules []Schedule  `yaml:"schedules"`
+	Schedule  *Schedule   `yaml:"schedule,omitempty"`
 	Flic      *FlicConfig `yaml:"flic,omitempty"`
 }
 
 type Schedule struct {
-	Hour   int `yaml:"hour"`
-	Minute int `yaml:"minute"`
+	Enabled bool `yaml:"enabled"`
 }
 
 type FlicConfig struct {
-	Enabled             bool   `yaml:"enabled"`
-	ServerURL           string `yaml:"server_url"`
-	ButtonBluetoothAddr string `yaml:"button_bluetooth_address"`
+	Enabled   bool   `yaml:"enabled"`
+	ServerURL string `yaml:"server_url"`
 }
 
 func LoadConfig(filename string) (*Config, error) {

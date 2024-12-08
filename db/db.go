@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
@@ -14,6 +15,19 @@ import (
 
 type DB struct {
 	db *sql.DB
+}
+
+type TriggerDB struct {
+	ID                      string
+	Type                    string
+	ScheduleHour            *int
+	ScheduleMinute          *int
+	ScheduleAction          *string
+	FlicButtonMac           *string
+	FlicButtonOnSingleClick *string
+	FlicButtonOnDoubleClick *string
+	FlicButtonOnHold        *string
+	CreatedAt               time.Time
 }
 
 func NewDB(dbPath string) (*DB, error) {
@@ -81,4 +95,53 @@ func (d *DB) AddFlicTrigger(t *models.FlicTrigger) error {
 	}
 
 	return nil
+}
+
+func (d *DB) GetAllTriggers() ([]models.Trigger, error) {
+	query := `SELECT * FROM triggers`
+	rows, err := d.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var triggers []models.Trigger
+	for rows.Next() {
+		var t TriggerDB
+		err := rows.Scan(
+			&t.ID,
+			&t.Type,
+			&t.ScheduleHour,
+			&t.ScheduleMinute,
+			&t.ScheduleAction,
+			&t.FlicButtonMac,
+			&t.FlicButtonOnSingleClick,
+			&t.FlicButtonOnDoubleClick,
+			&t.FlicButtonOnHold,
+			&t.CreatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		// Convert DB model to appropriate trigger type
+		if t.Type == string(models.TriggerTypeSchedule) {
+			triggers = append(triggers, &models.ScheduleTrigger{
+				ID:     t.ID,
+				Type:   models.TriggerTypeSchedule,
+				Hour:   *t.ScheduleHour,
+				Minute: *t.ScheduleMinute,
+				Action: models.TriggerAction(*t.ScheduleAction),
+			})
+		} else if t.Type == string(models.TriggerTypeFlic) {
+			triggers = append(triggers, &models.FlicTrigger{
+				ID:            t.ID,
+				Type:          models.TriggerTypeFlic,
+				Mac:           *t.FlicButtonMac,
+				OnSingleClick: (*models.TriggerAction)(t.FlicButtonOnSingleClick),
+				OnDoubleClick: (*models.TriggerAction)(t.FlicButtonOnDoubleClick),
+				OnHold:        (*models.TriggerAction)(t.FlicButtonOnHold),
+			})
+		}
+	}
+	return triggers, nil
 }
